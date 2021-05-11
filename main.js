@@ -1,3 +1,4 @@
+const { RSA_PKCS1_OAEP_PADDING } = require('constants');
 const crypto = require('crypto');
 const {JSONPath} = require('jsonpath-plus');
 
@@ -7,7 +8,9 @@ const settings = {
   algorithm: null,
   encoding: null,
   jsonPath: null,
-  removeWhitespace: false
+  removeWhitespace: false,
+  timestamp: null,
+  method: null
 };
 
 function hmac(content) {
@@ -21,9 +24,19 @@ function hmac(content) {
   if (settings.removeWhitespace) {
     content = JSON.stringify(JSON.parse(content));
   }
-  const hash = crypto.createHmac(settings.algorithm, settings.key);
-  hash.update(content, 'utf8');
-  return hash.digest(settings.encoding);
+
+  const publicKey = `-----BEGIN PUBLIC KEY-----\n!@#\n-----END PUBLIC KEY-----`;
+  const stringToHash = settings.timestamp + settings.method + content;
+  const hashContent = crypto.createHash(settings.algorithm).update(stringToHash).digest("hex");
+  const key = publicKey.replace("!@#", settings.key);
+
+  let hashBase64 = null;
+  try {
+      hashBase64 = crypto.publicEncrypt({key: key, padding: crypto.constants.RSA_PKCS1_PADDING}, Buffer.from(hashContent, 'utf8') ).toString('base64');
+  } catch(e) {
+      alert(e);
+  }
+  return hashBase64;
 }
 
 function replaceWithHMAC(content, body) {
@@ -31,9 +44,9 @@ function replaceWithHMAC(content, body) {
 }
 
 module.exports.templateTags = [{
-  name: 'requestbodyhmac',
-  displayName: 'Request body HMAC',
-  description: 'HMAC a value or the request body',
+  name: 'requestbodyhmacbruno',
+  displayName: 'Request body HMAC (Bruno version)',
+  description: 'HMAC a value or the request body (Bruno version)',
   args: [
     {
       displayName: 'Algorithm',
@@ -106,6 +119,8 @@ module.exports.templateTags = [{
 
 module.exports.requestHooks = [
   context => {
+    settings.method = context.request.getMethod();
+    settings.timestamp = context.request.getHeader("timestamp");
     if (context.request.getUrl().indexOf(replacementContent) !== -1) {
       context.request.setUrl(replaceWithHMAC(context.request.getUrl(), context.request.getBodyText()));
     }
