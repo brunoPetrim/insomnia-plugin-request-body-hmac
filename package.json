@@ -1,8 +1,8 @@
 {
   "name": "insomnia-plugin-request-body-hmac-bruno",
-  "version": "0.0.2",
-  "author": "John Wästerlund <john@grunka.com> and Bruno Rocha <brunomoreirarocha@gmail.com>",
-  "description": "Insomnia template tag for HMAC signature of value or request body",
+  "version": "0.0.3",
+  "author": "Bruno Rocha <brunomoreirarocha@gmail.com>",
+  "description": "Insomnia template tag for HMAC signature of value or request body (Bruno version)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brunoPetrim/insomnia-plugin-request-body-hmac.git"
