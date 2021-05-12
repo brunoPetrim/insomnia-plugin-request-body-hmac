@@ -1,6 +1,6 @@
 # Insomnia template tag for HMAC signature of message or request body (Bruno version)
 
-Based on the Insomnia template tag for HMAC signature of message or request body](https://github.com/grunka/insomnia-plugin-request-body-hmac) published to NPM.
+Based on the [Insomnia template tag for HMAC signature of message or request body](https://github.com/grunka/insomnia-plugin-request-body-hmac) published to NPM.
 
 For the nice rest client [Insomnia](https://insomnia.rest)
 
